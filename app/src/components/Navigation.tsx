@@ -311,7 +311,7 @@ export function Navigation({ transparent = false }: NavigationProps) {
 
                   {/* Menu Sections */}
                   <div className="p-4">
-                    {menuSections.map((section, idx) => (
+                    {menuSections.map((section) => (
                       <div key={section.title} className="mb-6">
                         {/* Section Title */}
                         <div className="flex items-center gap-2 mb-3 px-2">
