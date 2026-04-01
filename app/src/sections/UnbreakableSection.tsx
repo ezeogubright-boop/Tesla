@@ -1,9 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function UnbreakableSection() {
   const [isVisible, setIsVisible] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const descRef = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -36,6 +46,44 @@ export function UnbreakableSection() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Smooth entrance animations
+  useEffect(() => {
+    if (!contentRef.current || !isVisible) return;
+
+    const elements = [
+      { ref: subtitleRef, delay: 0 },
+      { ref: titleRef, delay: 0.15 },
+      { ref: imageRef, delay: 0.3 },
+      { ref: descRef, delay: 0.45 },
+      { ref: labelRef, delay: 0.6 },
+    ];
+
+    elements.forEach(({ ref, delay }) => {
+      gsap.fromTo(
+        ref.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          delay: delay,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 75%',
+            end: 'top 50%',
+            scrub: true,
+            markers: false,
+          },
+        }
+      );
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, [isVisible]);
+
   return (
     <section
       ref={sectionRef}
@@ -60,21 +108,19 @@ export function UnbreakableSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-24">
+      <div ref={contentRef} className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-24">
         {/* Subtitle */}
         <p
-          className={`text-white/60 text-xs tracking-[0.3em] uppercase mb-8 transition-all duration-700 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
+          ref={subtitleRef}
+          className="text-white/60 text-xs tracking-[0.3em] uppercase mb-8"
         >
           The Power of Innovation
         </p>
 
         {/* Large Title */}
         <h2
-          className={`text-5xl md:text-7xl lg:text-8xl font-light tracking-[0.05em] text-white mb-12 transition-all duration-1000 delay-200 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
+          ref={titleRef}
+          className="text-5xl md:text-7xl lg:text-8xl font-light tracking-[0.05em] text-white mb-12"
           style={{
             transform: `translateY(${(1 - scrollProgress) * 30}px)`,
           }}
@@ -84,9 +130,8 @@ export function UnbreakableSection() {
 
         {/* Cybertruck Image with Number Overlay */}
         <div
-          className={`relative w-full max-w-6xl mx-auto transition-all duration-1000 delay-400 ${
-            isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-          }`}
+          ref={imageRef}
+          className="relative w-full max-w-6xl mx-auto"
         >
           <img
             src="/cybertruck-rear.png"
@@ -109,9 +154,8 @@ export function UnbreakableSection() {
 
           {/* Description Text */}
           <div
-            className={`absolute bottom-12 right-12 md:right-48 max-w-xs text-right transition-all duration-1000 delay-600 ${
-              isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-            }`}
+            ref={descRef}
+            className="absolute bottom-12 right-12 md:right-48 max-w-xs text-right"
           >
             <p className="text-white/60 text-sm leading-relaxed">
               The Tesla Cybertruck redefines what a truck can be, combining cutting-edge design, exceptional durability, and unmatched performance.
@@ -121,9 +165,8 @@ export function UnbreakableSection() {
 
         {/* Bottom Label */}
         <div
-          className={`absolute bottom-12 left-6 lg:left-12 flex items-center gap-3 transition-all duration-1000 delay-800 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
+          ref={labelRef}
+          className="absolute bottom-12 left-6 lg:left-12 flex items-center gap-3"
         >
           <div className="w-8 h-8 rounded-lg border border-white/20 flex items-center justify-center">
             <div className="w-2 h-2 bg-white/40 rounded-full" />

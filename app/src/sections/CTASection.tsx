@@ -1,8 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function CTASection() {
   const [isVisible, setIsVisible] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const buttonsRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -21,6 +31,44 @@ export function CTASection() {
 
     return () => observer.disconnect();
   }, []);
+
+  // Smooth entrance animations
+  useEffect(() => {
+    if (!contentRef.current || !isVisible) return;
+
+    const elements = [
+      { ref: subtitleRef, delay: 0 },
+      { ref: titleRef, delay: 0.15 },
+      { ref: buttonsRef, delay: 0.3 },
+      { ref: imageRef, delay: 0.45 },
+      { ref: footerRef, delay: 0.6 },
+    ];
+
+    elements.forEach(({ ref, delay }) => {
+      gsap.fromTo(
+        ref.current,
+        { opacity: 0, y: 30 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          delay: delay,
+          ease: 'power2.out',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top 75%',
+            end: 'top 20%',
+            scrub: true,
+            markers: false,
+          },
+        }
+      );
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    };
+  }, [isVisible]);
 
   return (
     <section
@@ -46,30 +94,27 @@ export function CTASection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-2 sm:px-6 py-16 sm:py-24">
+      <div ref={contentRef} className="relative z-10 flex flex-col items-center justify-center min-h-screen px-2 sm:px-6 py-16 sm:py-24">
         {/* Subtitle */}
         <p
-          className={`text-white/60 text-xs sm:text-sm tracking-[0.3em] uppercase mb-6 transition-all duration-700 text-center ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
+          ref={subtitleRef}
+          className="text-white/60 text-xs sm:text-sm tracking-[0.3em] uppercase mb-6 text-center"
         >
           The Power of Innovation
         </p>
 
         {/* Main Title */}
         <h2
-          className={`text-4xl md:text-5xl lg:text-6xl font-light tracking-[0.05em] text-white mb-12 text-center transition-all duration-1000 delay-200 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
+          ref={titleRef}
+          className="text-4xl md:text-5xl lg:text-6xl font-light tracking-[0.05em] text-white mb-12 text-center"
         >
           EXPERIENCE THE FUTURE<br />OF DRIVING
         </h2>
 
         {/* Buttons */}
         <div
-          className={`flex flex-col sm:flex-row items-center gap-4 mb-16 transition-all duration-1000 delay-400 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
+          ref={buttonsRef}
+          className="flex flex-col sm:flex-row items-center gap-4 mb-16"
         >
           <button className="btn-primary flex items-center gap-2">
             <div className="w-4 h-4 rounded-full bg-black flex items-center justify-center">
@@ -84,9 +129,8 @@ export function CTASection() {
 
         {/* Cybertruck Image with Video Thumbnail */}
         <div
-          className={`relative w-full max-w-6xl mx-auto transition-all duration-1000 delay-600 ${
-            isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-          }`}
+          ref={imageRef}
+          className="relative w-full max-w-6xl mx-auto"
         >
           {/* Main Image */}
           <div className="relative">
@@ -111,9 +155,7 @@ export function CTASection() {
 
           {/* Video Thumbnail */}
           <div
-            className={`absolute w-32 sm:w-40 md:w-48 lg:w-64 aspect-video rounded-lg sm:rounded-xl overflow-hidden border border-white/20 transition-all duration-1000 delay-800 bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 ${
-              isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-            }`}
+            className="absolute w-32 sm:w-40 md:w-48 lg:w-64 aspect-video rounded-lg sm:rounded-xl overflow-hidden border border-white/20 bottom-4 right-4 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8"
           >
             <video
               src="/trace.mp4"
@@ -128,9 +170,8 @@ export function CTASection() {
 
         {/* Footer */}
         <div
-          className={`absolute bottom-8 left-0 right-0 text-center transition-all duration-1000 delay-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-          }`}
+          ref={footerRef}
+          className="absolute bottom-8 left-0 right-0 text-center"
         >
           <p className="text-white/30 text-xs">
             © 2024 Tesla Motors. All rights reserved.
