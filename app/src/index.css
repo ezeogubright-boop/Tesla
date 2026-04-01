@@ -1,0 +1,354 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Smoke effect for HeroSection */
+.smoke-effect {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 600px;
+  height: 180px;
+  transform: translateX(-50%);
+  background: url('https://raw.githubusercontent.com/robin-dela/css-smoke-animation/master/assets/smoke.png') repeat-x;
+  background-size: contain;
+  opacity: 0.35;
+  pointer-events: none;
+  animation: smoke-move 32s linear infinite, smoke-fade 12s ease-in-out infinite alternate;
+  z-index: 3;
+}
+
+@media (max-width: 900px) {
+  .smoke-effect {
+    width: 320px;
+    height: 90px;
+  }
+}
+
+@keyframes smoke-move {
+  0% { background-position-x: 0; }
+  100% { background-position-x: 600px; }
+}
+
+@keyframes smoke-fade {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 0.45; }
+}
+
+/* Footer gradient fade for CYBERTRUCK text */
+.footer-gradient {
+  position: relative;
+}
+.footer-gradient::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%; /* Stretches the fade higher */
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.201) 30%, rgb(0, 0, 0) 100%);
+  z-index: 2;
+}
+
+/* 3D tilt effect for CYBERTRUCK text */
+.footer-gradient {
+  transition: transform 0.3s cubic-bezier(.25,.8,.25,1), box-shadow 0.3s cubic-bezier(.25,.8,.25,1);
+  will-change: transform;
+  perspective: 600px;
+  box-shadow: 0 24px 64px 0 rgba(0,0,0,0.25);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 5%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 0 0% 15%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 0 0% 100%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-black text-white antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Floating particles animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(20px);
+    opacity: 0;
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(-30px);
+    opacity: 0;
+  }
+}
+
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.particle-1 {
+  animation: float 15s linear infinite;
+}
+
+.particle-2 {
+  animation: float-slow 20s linear infinite;
+}
+
+/* Smoke/Mist effect */
+@keyframes smoke {
+  0% {
+    transform: translateX(-100%) scaleX(1);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(100%) scaleX(2);
+    opacity: 0;
+  }
+}
+
+.smoke-effect {
+  position: absolute;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  filter: blur(40px);
+  animation: smoke 20s ease-in-out infinite;
+}
+
+/* Glow effects */
+.glow-text {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3),
+               0 0 40px rgba(255, 255, 255, 0.1);
+}
+
+.glow-red {
+  box-shadow: 0 0 30px rgba(239, 68, 68, 0.5),
+              0 0 60px rgba(239, 68, 68, 0.3);
+}
+
+/* Reveal animations */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes reveal-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-reveal-up {
+  animation: reveal-up 0.8s ease-out forwards;
+}
+
+.animate-reveal-scale {
+  animation: reveal-scale 1s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out forwards;
+}
+
+/* Stagger delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-800 { animation-delay: 0.8s; }
+
+/* Glass effect */
+.glass {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Stat card hover */
+.stat-card {
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Button styles */
+.btn-primary {
+  @apply px-6 py-3 bg-white text-black font-medium rounded-full transition-all duration-300;
+}
+
+.btn-primary:hover {
+  @apply bg-gray-200 scale-105;
+}
+
+.btn-outline {
+  @apply px-6 py-3 border border-white/30 text-white font-medium rounded-full transition-all duration-300;
+}
+
+.btn-outline:hover {
+  @apply border-white/60 bg-white/5;
+}
+
+/* Section transitions */
+.section-transition {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Parallax container */
+.parallax-container {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+/* Number counter animation */
+@keyframes count-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Video thumbnail play button */
+.play-button {
+  @apply absolute inset-0 flex items-center justify-center;
+}
+
+.play-button::before {
+  content: '';
+  @apply w-16 h-16 bg-white/20 rounded-full backdrop-blur-sm;
+}
+
+.play-button::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-left: 12px solid white;
+  border-bottom: 8px solid transparent;
+  margin-left: 8px;
+}
+
+/* Gradient overlays */
+.gradient-overlay-bottom {
+  background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.8));
+}
+
+.gradient-overlay-top {
+  background: linear-gradient(to top, transparent, rgba(0,0,0,0.8));
+}
+
+/* Mountain silhouette */
+.mountain-silhouette {
+  background: linear-gradient(to bottom, transparent 0%, #000 100%);
+}
