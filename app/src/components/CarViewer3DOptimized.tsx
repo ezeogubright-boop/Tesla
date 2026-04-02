@@ -14,10 +14,16 @@ interface CarViewerProps {
 function CarModel({ modelPath, rotationY = -0.35, modelScale = 4 }: CarViewerProps) {
   const rotationRef = useRef<THREE.Group>(null);
   const modelRef = useRef<THREE.Object3D>(null);
+  const rotationYRef = useRef(rotationY);
   const [isReady, setIsReady] = useState(false);
   
   // Use optimized model loader with caching
   const { gltf, error } = useModelLoader(modelPath);
+
+  // Keep the rotation ref in sync with the prop
+  useEffect(() => {
+    rotationYRef.current = rotationY;
+  }, [rotationY]);
 
   // Center and position the model
   useEffect(() => {
@@ -42,10 +48,10 @@ function CarModel({ modelPath, rotationY = -0.35, modelScale = 4 }: CarViewerPro
     setIsReady(true);
   }, [gltf?.scene, isReady, modelScale]);
 
-  // Smooth rotation animation
+  // Smooth rotation animation using ref to ensure latest value
   useFrame(() => {
     if (rotationRef.current && isReady) {
-      rotationRef.current.rotation.y = rotationY;
+      rotationRef.current.rotation.y = rotationYRef.current;
     }
   });
 

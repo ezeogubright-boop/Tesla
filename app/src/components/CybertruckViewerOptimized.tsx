@@ -16,10 +16,16 @@ interface CybertruckViewerProps {
 function Model({ modelUrl, rotationY }: { modelUrl: string; rotationY: number }) {
   const rotationRef = useRef<THREE.Group>(null);
   const modelRef = useRef<THREE.Object3D>(null);
+  const rotationYRef = useRef(rotationY);
   const [isReady, setIsReady] = useState(false);
   
   // Use optimized model loader
   const { gltf, error } = useModelLoader(modelUrl);
+
+  // Keep the rotation ref in sync with the prop
+  useEffect(() => {
+    rotationYRef.current = rotationY;
+  }, [rotationY]);
 
   // Center and optimize model on load
   useEffect(() => {
@@ -44,10 +50,10 @@ function Model({ modelUrl, rotationY }: { modelUrl: string; rotationY: number })
     setIsReady(true);
   }, [gltf?.scene, isReady]);
 
-  // Smooth rotation frame
+  // Smooth rotation frame using ref to ensure latest rotation value
   useFrame(() => {
     if (rotationRef.current) {
-      rotationRef.current.rotation.y = rotationY;
+      rotationRef.current.rotation.y = rotationYRef.current;
     }
   });
 

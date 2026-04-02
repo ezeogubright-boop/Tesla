@@ -15,15 +15,15 @@ interface ModelProps {
 function Model({ modelUrl, rotationY }: ModelProps) {
   const rotationRef = useRef<THREE.Group>(null);
   const modelRef = useRef<THREE.Object3D>(null);
-  const [isReady, setIsReady] = useState(false);
   const rotationYRef = useRef(rotationY);
+  const [isReady, setIsReady] = useState(false);
   
-  // Update ref when prop changes
+  const gltf = useGLTF(modelUrl);
+
+  // Keep the rotation ref in sync with the prop
   useEffect(() => {
     rotationYRef.current = rotationY;
   }, [rotationY]);
-  
-  const gltf = useGLTF(modelUrl);
 
   // Center the model on first load
   useEffect(() => {
@@ -40,9 +40,10 @@ function Model({ modelUrl, rotationY }: ModelProps) {
     setIsReady(true);
   }, [gltf.scene, isReady]);
 
-  // Rotation on Y axis - use ref to avoid stale closures
+  // Rotation on Y axis
+  // Using ref to ensure latest rotation value is always used in animation frame
   useFrame(() => {
-    if (rotationRef.current && isReady) {
+    if (rotationRef.current) {
       rotationRef.current.rotation.y = rotationYRef.current;
     }
   });

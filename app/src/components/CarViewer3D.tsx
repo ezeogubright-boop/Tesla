@@ -7,43 +7,41 @@ interface CarViewerProps {
   modelPath: string;
   rotationY?: number;
   modelScale?: number;
-  autoRotate?: boolean;
 }
 
-function CarModel({ modelPath, rotationY = -0.35, modelScale = 4, autoRotate = true }: CarViewerProps) {
+function CarModel({ modelPath, rotationY = -0.35, modelScale = 4 }: CarViewerProps) {
   const rotationRef = useRef<THREE.Group>(null);
   const modelRef = useRef<THREE.Object3D>(null);
-  const [isReady, setIsReady] = useState(false);
   const rotationYRef = useRef(rotationY);
+  const [isReady, setIsReady] = useState(false);
   
   const gltf = useGLTF(modelPath);
 
-  // Update rotation ref when prop changes
+  // Keep the rotation ref in sync with the prop
   useEffect(() => {
     rotationYRef.current = rotationY;
   }, [rotationY]);
 
-  // Center the model on first load
+  // Center the model on first load - EXACT SAME as CybertruckViewer
   useEffect(() => {
     if (!gltf.scene || isReady) return;
 
+    // Calculate the bounding box to find true center
     const box = new THREE.Box3().setFromObject(gltf.scene);
     const center = box.getCenter(new THREE.Vector3());
     
+    // Position the model so its center is at origin
     gltf.scene.position.sub(center);
     gltf.scene.scale.set(modelScale, modelScale, modelScale);
     
     setIsReady(true);
-  }, [gltf.scene, isReady, modelScale]);
+  }, [gltf.scene, isReady]);
 
-  // Auto-rotation on Y axis
+  // Rotation on Y axis - pure rotation like basketball on finger
+  // Using ref to ensure latest rotation value is always used
   useFrame(() => {
     if (rotationRef.current && isReady) {
-      if (autoRotate) {
-        rotationRef.current.rotation.y += 0.005; // Smooth auto-rotation
-      } else {
-        rotationRef.current.rotation.y = rotationYRef.current;
-      }
+      rotationRef.current.rotation.y = rotationYRef.current;
     }
   });
 
@@ -72,12 +70,12 @@ function CarViewerFallback() {
   );
 }
 
-export function CarViewer3D({ modelPath, rotationY = -0.35, modelScale = 4, autoRotate = true }: CarViewerProps) {
+export function CarViewer3D({ modelPath, rotationY = -0.35, modelScale = 4 }: CarViewerProps) {
   return (
     <Canvas
       key={modelPath}
       camera={{ position: [0, 0, 10], fov: 50, near: 0.1, far: 1000 }}
-      gl={{ antialias: true, alpha: true, precision: 'highp', powerPreference: 'high-performance' }}
+      gl={{ antialias: true, alpha: true, precision: 'highp' }}
       dpr={[1, 2]}
       style={{ width: '100%', height: '100%' }}
     >
@@ -91,7 +89,7 @@ export function CarViewer3D({ modelPath, rotationY = -0.35, modelScale = 4, auto
       <pointLight position={[10, 0, 10]} intensity={0.5} />
       
       <Suspense fallback={<CarViewerFallback />}>
-        <CarModel modelPath={modelPath} rotationY={rotationY} modelScale={modelScale} autoRotate={autoRotate} />
+        <CarModel modelPath={modelPath} rotationY={rotationY} modelScale={modelScale} />
       </Suspense>
 
       <OrbitControls
