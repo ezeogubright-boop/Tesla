@@ -1,0 +1,22 @@
+{
+  "github.copilot.advanced": {
+    "debug.testOverrideProxyUrl": "",
+    "debug.testOverrideFetchResponse": "",
+    "debug.overrideChatApiUrl": ""
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python",
+    "editor.formatOnSave": true
+  },
+  "modelContextProtocol": {
+    "servers": {
+      "render": {
+        "command": "node",
+        "args": ["render-mcp-server.js"],
+        "env": {
+          "RENDER_API_KEY": "${RENDER_API_KEY}"
+        }
+      }
+    }
+  }
+}
