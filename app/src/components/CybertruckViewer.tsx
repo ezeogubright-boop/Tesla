@@ -87,34 +87,53 @@ export function CybertruckViewer({ modelUrl = '/models/tesla_cybertruck.glb' }) 
   const [startAngle, setStartAngle] = useState(0);
   const knobRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const rotObjRef = useRef({ value: 0 });
+  const tweenRef = useRef<any>(null);
 
-  // Scroll-based 360 rotation
+  // Scroll-based 360 rotation - Initialize only once on mount
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const rotObj = { value: 0 };
+    // Reset rotation to 0 on mount
+    rotObjRef.current.value = 0;
+    setRotation(0);
 
-    const tween = gsap.to(rotObj, {
-      value: Math.PI * 2, // 360 degrees
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top center',
-        end: 'bottom center',
-        scrub: 1,
-        markers: false,
-      },
-      onUpdate: () => {
-        if (!isDragging) {
-          setRotation(rotObj.value);
-        }
-      },
-    });
+    // Small delay to ensure DOM is fully ready
+    const timeoutId = setTimeout(() => {
+      if (!containerRef.current) return;
+
+      const rotObj = rotObjRef.current;
+
+      // Kill any existing tween
+      if (tweenRef.current) {
+        tweenRef.current.kill();
+      }
+
+      tweenRef.current = gsap.to(rotObj, {
+        value: Math.PI * 2, // 360 degrees
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top center',
+          end: 'bottom center',
+          scrub: 1,
+          markers: false,
+        },
+        onUpdate: () => {
+          if (!isDragging) {
+            setRotation(rotObj.value);
+          }
+        },
+      });
+    }, 50);
 
     return () => {
-      tween.kill();
+      clearTimeout(timeoutId);
+      if (tweenRef.current) {
+        tweenRef.current.kill();
+      }
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, [isDragging]);
+  }, []);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     setIsDragging(true);
