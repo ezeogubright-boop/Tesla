@@ -21,7 +21,6 @@ export function LazyComponentLoader({
   preload = false,
 }: LazyLoaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(preload);
   const [hasBeenInView, setHasBeenInView] = useState(preload);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
@@ -34,7 +33,6 @@ export function LazyComponentLoader({
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            setIsInView(true);
             setHasBeenInView(true);
             // Stop observing once component is loaded
             if (observerRef.current) {

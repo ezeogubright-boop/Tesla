@@ -94,13 +94,10 @@ export class PerformanceMonitor {
 /**
  * Hook to measure component render time
  */
-import { useRef, useEffect, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 export function useMeasureRender(componentName: string) {
-  const startTimeRef = useRef(performance.now());
-
   useEffect(() => {
-    const duration = performance.now() - startTimeRef.current;
     PerformanceMonitor.endMeasure(`${componentName} - Total Render`);
   }, [componentName]);
 

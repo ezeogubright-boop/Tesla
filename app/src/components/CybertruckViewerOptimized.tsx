@@ -5,7 +5,6 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import * as THREE from 'three';
 import { useModelLoader } from '../hooks/useModelLoader';
-import { ModelLoaderSkeleton, ModelLoadError } from './LoadingStates';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,14 +13,13 @@ interface CybertruckViewerProps {
 }
 
 // Optimized model component
-function Model({ modelUrl }: { modelUrl: string; rotationY: number }) {
+function Model({ modelUrl, rotationY }: { modelUrl: string; rotationY: number }) {
   const rotationRef = useRef<THREE.Group>(null);
   const modelRef = useRef<THREE.Object3D>(null);
   const [isReady, setIsReady] = useState(false);
-  const [rotationY, setRotationY] = useState(0);
   
   // Use optimized model loader
-  const { gltf, isLoading, error } = useModelLoader(modelUrl);
+  const { gltf, error } = useModelLoader(modelUrl);
 
   // Center and optimize model on load
   useEffect(() => {
@@ -164,7 +162,7 @@ export function CybertruckViewer({ modelUrl = '/models/tesla_cybertruck.glb' }: 
   // Memoize canvas props
   const canvasProps = useMemo(() => ({
     key: modelUrl,
-    camera: { position: [0, 0, 12], fov: 50, near: 0.1, far: 1000 },
+    camera: { position: [0, 0, 12] as [number, number, number], fov: 50, near: 0.1, far: 1000 },
     gl: {
       antialias: true,
       alpha: true,

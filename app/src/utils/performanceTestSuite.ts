@@ -164,7 +164,7 @@ export async function runPerformanceBenchmark() {
   recommendations.forEach((rec, idx) => {
     console.log(`${idx + 1}. ${rec}`);
   });
-  results.recommendations = recommendations;
+  (results as any).recommendations = recommendations;
 
   // Final Summary
   console.log('%n\n=== BENCHMARK COMPLETE ===', 'color: #00ff00; font-size: 16px; font-weight: bold;');

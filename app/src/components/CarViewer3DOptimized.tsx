@@ -3,7 +3,6 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
 import { useModelLoader } from '../hooks/useModelLoader';
-import { ModelLoaderSkeleton, ModelLoadError } from './LoadingStates';
 
 interface CarViewerProps {
   modelPath: string;
@@ -18,7 +17,7 @@ function CarModel({ modelPath, rotationY = -0.35, modelScale = 4 }: CarViewerPro
   const [isReady, setIsReady] = useState(false);
   
   // Use optimized model loader with caching
-  const { gltf, isLoading, error } = useModelLoader(modelPath);
+  const { gltf, error } = useModelLoader(modelPath);
 
   // Center and position the model
   useEffect(() => {
@@ -91,7 +90,7 @@ export function CarViewer3D({ modelPath, rotationY = -0.35, modelScale = 4 }: Ca
   // Memoize canvas props to prevent unnecessary re-renders
   const canvasProps = useMemo(() => ({
     key: modelPath,
-    camera: { position: [0, 0, 10], fov: 50, near: 0.1, far: 1000 },
+    camera: { position: [0, 0, 10] as [number, number, number], fov: 50, near: 0.1, far: 1000 },
     gl: { 
       antialias: true, 
       alpha: true, 

@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 /**
  * Skeleton loader for 3D model containers while loading

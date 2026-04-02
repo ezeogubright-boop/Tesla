@@ -8,10 +8,7 @@ export default defineConfig({
   base: './',
   plugins: [
     inspectAttr(),
-    react({
-      // Enable faster refresh during development
-      fastRefresh: true,
-    }),
+    react(),
   ],
   resolve: {
     alias: {
@@ -22,13 +19,7 @@ export default defineConfig({
     // Improved production build optimization
     target: 'ES2020',
     minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-      },
-    },
-    // Code splitting for better caching
+    // Optimize chunks
     rollupOptions: {
       output: {
         manualChunks: {
