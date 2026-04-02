@@ -16,6 +16,12 @@ function Model({ modelUrl, rotationY }: ModelProps) {
   const rotationRef = useRef<THREE.Group>(null);
   const modelRef = useRef<THREE.Object3D>(null);
   const [isReady, setIsReady] = useState(false);
+  const rotationYRef = useRef(rotationY);
+  
+  // Update ref when prop changes
+  useEffect(() => {
+    rotationYRef.current = rotationY;
+  }, [rotationY]);
   
   const gltf = useGLTF(modelUrl);
 
@@ -34,11 +40,10 @@ function Model({ modelUrl, rotationY }: ModelProps) {
     setIsReady(true);
   }, [gltf.scene, isReady]);
 
-  // Rotation on Y axis
-  // eslint-disable-next-line react-hooks/rules-of-hooks
+  // Rotation on Y axis - use ref to avoid stale closures
   useFrame(() => {
-    if (rotationRef.current) {
-      rotationRef.current.rotation.y = rotationY;
+    if (rotationRef.current && isReady) {
+      rotationRef.current.rotation.y = rotationYRef.current;
     }
   });
 
